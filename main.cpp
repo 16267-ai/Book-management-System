@@ -2,6 +2,9 @@
 #include <string>
 using namespace std;
 
+// =====================
+// Book Class
+// =====================
 class Book {
 private:
     string title;
@@ -10,15 +13,15 @@ private:
     bool isAvailable;
 
 public:
-    // set book details
+    // Set book details
     void setBookDetails(string t, string a, string i) {
         title = t;
         author = a;
         isbn = i;
-        isAvailable = true; // default = available
+        isAvailable = true;
     }
 
-    // display book info
+    // Display book details
     void displayBookDetails() {
         cout << "Title: " << title << endl;
         cout << "Author: " << author << endl;
@@ -27,7 +30,7 @@ public:
         cout << "-------------------------" << endl;
     }
 
-    // borrow book
+    // Borrow book
     bool borrowBook() {
         if (isAvailable) {
             isAvailable = false;
@@ -36,26 +39,106 @@ public:
         return false;
     }
 
-    // return book
+    // Return book
     void returnBook() {
         isAvailable = true;
     }
 
-    // get ISBN
+    // Get ISBN
     string getISBN() {
         return isbn;
     }
+
+    // Get availability
+    bool getAvailability() {
+        return isAvailable;
+    }
 };
 
-int main() {
+// =====================
+// Library Class (Dependency Class)
+// =====================
+class Library {
+private:
     Book books[5];
+    int bookCount;
 
-    // initialize books
-    books[0].setBookDetails("C++ Basics", "John Smith", "111");
-    books[1].setBookDetails("OOP Concepts", "Alice Brown", "222");
-    books[2].setBookDetails("Data Structures", "David Lee", "333");
-    books[3].setBookDetails("Algorithms", "Emma White", "444");
-    books[4].setBookDetails("Programming Logic", "Chris Green", "555");
+public:
+    Library() {
+        bookCount = 0;
+    }
+
+    // Add book
+    void addBook(Book book) {
+        if (bookCount < 5) {
+            books[bookCount] = book;
+            bookCount++;
+        }
+    }
+
+    // Display all books
+    void displayAllBooks() {
+        for (int i = 0; i < bookCount; i++) {
+            books[i].displayBookDetails();
+        }
+    }
+
+    // Find book by ISBN
+    int findBookByISBN(string isbn) {
+        for (int i = 0; i < bookCount; i++) {
+            if (books[i].getISBN() == isbn) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    // Borrow book by ISBN
+    void borrowBookByISBN(string isbn) {
+        int index = findBookByISBN(isbn);
+
+        if (index == -1) {
+            cout << "Book not found!" << endl;
+        } else {
+            if (books[index].borrowBook()) {
+                cout << "Book borrowed successfully!" << endl;
+            } else {
+                cout << "Book is already borrowed!" << endl;
+            }
+        }
+    }
+
+    // Get book count
+    int getBookCount() {
+        return bookCount;
+    }
+};
+
+// =====================
+// Main Function
+// =====================
+int main() {
+    Library library;
+
+    // Create books
+    Book b1, b2, b3, b4, b5;
+
+    b1.setBookDetails("C++ Basics", "John Smith", "111");
+    b2.setBookDetails("Data Structures", "Alice Brown", "222");
+    b3.setBookDetails("Programming Logic", "David Lee", "333");
+    b4.setBookDetails("OOP Concepts", "Emma White", "444");
+    b5.setBookDetails("Algorithms", "Michael Green", "555");
+
+    // Add books to library
+    library.addBook(b1);
+    library.addBook(b2);
+    library.addBook(b3);
+    library.addBook(b4);
+    library.addBook(b5);
+
+    // Display books
+    cout << "Library Books:" << endl;
+    library.displayAllBooks();
 
     string inputISBN;
 
@@ -68,28 +151,8 @@ int main() {
             break;
         }
 
-        bool found = false;
-
-        for (int i = 0; i < 5; i++) {
-            if (books[i].getISBN() == inputISBN) {
-                found = true;
-
-                if (books[i].borrowBook()) {
-                    cout << "Book borrowed successfully!\n";
-                    books[i].displayBookDetails();
-                } else {
-                    cout << "Error: Book is not available.\n";
-                }
-                break;
-            }
-        }
-
-        if (!found) {
-            cout << "Error: Book not found.\n";
-        }
+        library.borrowBookByISBN(inputISBN);
     }
-// Add Task 3: Implement HardcopyBook and EBook class hierarchy
-// update version
-    
+
     return 0;
 }
