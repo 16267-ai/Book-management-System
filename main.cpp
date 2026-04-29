@@ -88,7 +88,7 @@ int main() {
             cout << "Error: Book not found.\n";
         }
     }
-
+// Add Task 3: Implement HardcopyBook and EBook class hierarchy
 // update version
     
     return 0;
